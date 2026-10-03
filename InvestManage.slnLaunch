@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "API + MAUI (Windows)",
+    "Projects": [
+      {
+        "Path": "src\\InvestManage.Api\\InvestManage.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "src\\InvestManage.Maui\\InvestManage.Maui.csproj",
+        "Action": "Start",
+        "DebugTarget": "Windows Machine"
+      }
+    ]
+  }
+]

@@ -1,0 +1,61 @@
+name: Pull Request CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: true
+      MAUI_WINDOWS_FRAMEWORK: net10.0-windows10.0.19041.0
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET and MAUI for Windows
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+          workloads: maui-windows
+
+      - name: Restore API
+        run: dotnet restore src/InvestManage.Api/InvestManage.Api.csproj
+
+      - name: Restore MAUI Windows
+        run: dotnet restore src/InvestManage.Maui/InvestManage.Maui.csproj --runtime win-x64 -p:BuildWindowsOnly=true
+
+      - name: Restore tests
+        shell: pwsh
+        run: |
+          dotnet restore tests/InvestManage.Domain.Tests/InvestManage.Domain.Tests.csproj
+          dotnet restore tests/InvestManage.Api.Tests/InvestManage.Api.Tests.csproj
+          dotnet restore tests/InvestManage.Maui.Tests/InvestManage.Maui.Tests.csproj
+
+      - name: Build API
+        run: dotnet build src/InvestManage.Api/InvestManage.Api.csproj --configuration Release --no-restore
+
+      - name: Build MAUI Windows
+        run: dotnet build src/InvestManage.Maui/InvestManage.Maui.csproj --configuration Release --framework ${{ env.MAUI_WINDOWS_FRAMEWORK }} --runtime win-x64 --no-restore -p:BuildWindowsOnly=true
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          dotnet test tests/InvestManage.Domain.Tests/InvestManage.Domain.Tests.csproj --configuration Release --no-restore
+          dotnet test tests/InvestManage.Api.Tests/InvestManage.Api.Tests.csproj --configuration Release --no-restore
+          dotnet test tests/InvestManage.Maui.Tests/InvestManage.Maui.Tests.csproj --configuration Release --no-restore

@@ -1,0 +1,6 @@
+@InvestManage.Api_HostAddress = https://localhost:7094
+
+GET {{InvestManage.Api_HostAddress}}/api/v1/system/status
+Accept: application/json
+
+###
