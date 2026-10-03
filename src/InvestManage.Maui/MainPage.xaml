@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InvestManage.Maui.MainPage"
+             Title="InvestManage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="32"
+            Spacing="18">
+
+            <Label
+                Text="InvestManage"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="MAUI client"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2" />
+
+            <Border Padding="20">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        Text="API connection"
+                        FontAttributes="Bold"
+                        FontSize="18" />
+
+                    <Label
+                        x:Name="ApiStatusLabel"
+                        Text="Not checked"
+                        SemanticProperties.Description="Current API connection status" />
+
+                    <ActivityIndicator
+                        x:Name="ApiActivityIndicator"
+                        IsRunning="False"
+                        IsVisible="False" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button
+                x:Name="CheckApiButton"
+                Text="Check API connection"
+                SemanticProperties.Hint="Calls the InvestManage API status endpoint"
+                Clicked="OnCheckApiClicked"
+                HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
