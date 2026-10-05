@@ -10,7 +10,7 @@ public sealed class User
         DisplayName = Guard.Required(displayName, nameof(displayName));
     }
 
-    public Guid Id { get; }
+    public Guid Id { get; private set; }
 
-    public string DisplayName { get; }
+    public string DisplayName { get; private set; }
 }

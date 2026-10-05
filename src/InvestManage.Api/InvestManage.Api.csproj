@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\InvestManage.Application\InvestManage.Application.csproj" />
     <ProjectReference Include="..\InvestManage.Contracts\InvestManage.Contracts.csproj" />
+    <ProjectReference Include="..\InvestManage.Infrastructure\InvestManage.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

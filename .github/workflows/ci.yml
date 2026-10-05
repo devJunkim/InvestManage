@@ -44,6 +44,7 @@ jobs:
         shell: pwsh
         run: |
           dotnet restore tests/InvestManage.Domain.Tests/InvestManage.Domain.Tests.csproj
+          dotnet restore tests/InvestManage.Infrastructure.Tests/InvestManage.Infrastructure.Tests.csproj
           dotnet restore tests/InvestManage.Api.Tests/InvestManage.Api.Tests.csproj
           dotnet restore tests/InvestManage.Maui.Tests/InvestManage.Maui.Tests.csproj
 
@@ -57,5 +58,6 @@ jobs:
         shell: pwsh
         run: |
           dotnet test tests/InvestManage.Domain.Tests/InvestManage.Domain.Tests.csproj --configuration Release --no-restore
+          dotnet test tests/InvestManage.Infrastructure.Tests/InvestManage.Infrastructure.Tests.csproj --configuration Release --no-restore
           dotnet test tests/InvestManage.Api.Tests/InvestManage.Api.Tests.csproj --configuration Release --no-restore
           dotnet test tests/InvestManage.Maui.Tests/InvestManage.Maui.Tests.csproj --configuration Release --no-restore

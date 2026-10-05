@@ -11,9 +11,9 @@ public sealed class AccountInvestment
         InvestmentItemId = Guard.Required(investmentItemId, nameof(investmentItemId));
     }
 
-    public Guid Id { get; }
+    public Guid Id { get; private set; }
 
-    public Guid InvestmentAccountId { get; }
+    public Guid InvestmentAccountId { get; private set; }
 
-    public Guid InvestmentItemId { get; }
+    public Guid InvestmentItemId { get; private set; }
 }

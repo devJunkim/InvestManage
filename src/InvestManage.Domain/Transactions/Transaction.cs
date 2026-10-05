@@ -36,23 +36,23 @@ public sealed class Transaction
         CurrencyCode = NormalizeCurrencyCode(currencyCode);
     }
 
-    public Guid Id { get; }
+    public Guid Id { get; private set; }
 
-    public Guid AccountInvestmentId { get; }
+    public Guid AccountInvestmentId { get; private set; }
 
-    public TransactionType Type { get; }
+    public TransactionType Type { get; private set; }
 
-    public DateOnly TradeDate { get; }
+    public DateOnly TradeDate { get; private set; }
 
-    public DateOnly? SettlementDate { get; }
+    public DateOnly? SettlementDate { get; private set; }
 
-    public decimal Quantity { get; }
+    public decimal Quantity { get; private set; }
 
-    public decimal UnitPrice { get; }
+    public decimal UnitPrice { get; private set; }
 
-    public decimal Fees { get; }
+    public decimal Fees { get; private set; }
 
-    public string CurrencyCode { get; }
+    public string CurrencyCode { get; private set; }
 
     private static string NormalizeCurrencyCode(string currencyCode)
     {

@@ -23,15 +23,15 @@ public sealed class InvestmentAccount
         CurrencyCode = NormalizeCurrencyCode(currencyCode);
     }
 
-    public Guid Id { get; }
+    public Guid Id { get; private set; }
 
-    public Guid UserId { get; }
+    public Guid UserId { get; private set; }
 
-    public string Name { get; }
+    public string Name { get; private set; }
 
-    public InvestmentAccountType Type { get; }
+    public InvestmentAccountType Type { get; private set; }
 
-    public string CurrencyCode { get; }
+    public string CurrencyCode { get; private set; }
 
     private static string NormalizeCurrencyCode(string currencyCode)
     {

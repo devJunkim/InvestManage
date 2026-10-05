@@ -17,7 +17,7 @@ public sealed class Currency
         Name = Guard.Required(name, nameof(name));
     }
 
-    public string Code { get; }
+    public string Code { get; private set; }
 
-    public string Name { get; }
+    public string Name { get; private set; }
 }
