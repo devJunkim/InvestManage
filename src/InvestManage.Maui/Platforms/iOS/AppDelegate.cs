@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace InvestManage.Maui;
+namespace InvestManage.Maui.Platforms.iOS;
 
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate
