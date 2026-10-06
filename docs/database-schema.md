@@ -12,13 +12,14 @@ The [InvestManage ERD](../output/pdf/InvestManage-ERD.pdf) shows the tables, key
 - Quantities use `decimal(28,8)` to preserve fractional fund units.
 - Fees use `decimal(19,4)`.
 - Trade, settlement, and price-history dates use SQL Server `date` columns.
-- Check constraints reject non-positive prices, quantities, and unit prices, negative fees, and settlement dates before trade dates.
+- Check constraints reject non-positive prices, quantities, and unit prices, negative fees, settlement dates before trade dates, and investment price precision outside zero to eight decimal places.
 
 ## Indexes
 
 | Table | Columns | Purpose |
 | --- | --- | --- |
-| `InvestmentItems` | `NormalizedCode` | Search investments by normalized symbol or fund code. |
+| `InvestmentItems` | `IsArchived`, `NormalizedCode` | List active or archived investments and search by normalized symbol or fund code. |
+| `InvestmentItems` | `IsArchived`, `Type`, `CurrencyCode` | Filter active or archived investments by type and currency. |
 | `InvestmentAccounts` | `UserId`, `IsArchived`, `Name` | List a user's active or archived accounts efficiently. |
 | `AccountInvestments` | `InvestmentAccountId`, `InvestmentItemId` (unique) | Prevent duplicate assignment of an investment to an account and list account holdings. |
 | `PriceHistory` | `InvestmentItemId`, `PriceDate`, `Type`, `Source` (unique) | Retrieve investment price ranges and reject duplicate prices from the same source and type for a date. |

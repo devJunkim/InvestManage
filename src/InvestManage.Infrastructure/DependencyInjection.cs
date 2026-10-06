@@ -1,4 +1,5 @@
 using InvestManage.Application.Accounts;
+using InvestManage.Application.Investments;
 using InvestManage.Infrastructure.Persistence;
 using InvestManage.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ public static class DependencyInjection
         services.AddDbContext<InvestManageDbContext>(options =>
             options.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure()));
         services.AddScoped<IInvestmentAccountRepository, InvestmentAccountRepository>();
+        services.AddScoped<IInvestmentItemRepository, InvestmentItemRepository>();
 
         return services;
     }

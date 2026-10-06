@@ -1,7 +1,9 @@
 using InvestManage.Application.Accounts;
+using InvestManage.Application.Investments;
 using InvestManage.Domain.Accounts;
 using InvestManage.Domain.Currencies;
 using InvestManage.Domain.Investments;
+using InvestManage.Domain.Prices;
 using InvestManage.Domain.Transactions;
 using InvestManage.Domain.Users;
 using InvestManage.Infrastructure.Persistence;
@@ -36,9 +38,11 @@ public sealed class InvestManageApiFactory : WebApplicationFactory<Program>
             services.RemoveAll<IDbContextOptionsConfiguration<InvestManageDbContext>>();
             services.RemoveAll<InvestManageDbContext>();
             services.RemoveAll<IInvestmentAccountRepository>();
+            services.RemoveAll<IInvestmentItemRepository>();
 
             services.AddDbContext<InvestManageDbContext>(options => options.UseSqlite(connection));
             services.AddScoped<IInvestmentAccountRepository, InvestmentAccountRepository>();
+            services.AddScoped<IInvestmentItemRepository, InvestmentItemRepository>();
         });
     }
 
@@ -94,6 +98,34 @@ public sealed class InvestManageApiFactory : WebApplicationFactory<Program>
             account.IsArchived,
             holdingIds.Count,
             await context.Transactions.CountAsync(item => holdingIds.Contains(item.AccountInvestmentId)));
+    }
+
+    public async Task AddPriceHistoryAsync(Guid investmentItemId)
+    {
+        using var scope = Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<InvestManageDbContext>();
+
+        context.PriceHistory.Add(
+            new PriceHistory(
+                Guid.NewGuid(),
+                investmentItemId,
+                new DateOnly(2026, 10, 6),
+                20.0812m,
+                PriceType.NetAssetValue,
+                "Manual"));
+        await context.SaveChangesAsync();
+    }
+
+    public async Task<(int Items, int Assignments, int Prices)> ReadInvestmentStateAsync(
+        Guid investmentItemId)
+    {
+        using var scope = Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<InvestManageDbContext>();
+
+        return (
+            await context.InvestmentItems.CountAsync(item => item.Id == investmentItemId),
+            await context.AccountInvestments.CountAsync(item => item.InvestmentItemId == investmentItemId),
+            await context.PriceHistory.CountAsync(item => item.InvestmentItemId == investmentItemId));
     }
 
     protected override void Dispose(bool disposing)
