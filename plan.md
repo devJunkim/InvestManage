@@ -92,7 +92,7 @@ Completion criteria:
 
 ## Phase 2 — Account and investment management
 
-**Status:** Planned
+**Status:** In progress
 
 Suggested branch: `account-investments`
 
@@ -329,4 +329,4 @@ For each phase:
 
 ## Next action
 
-Begin Phase 2 with INVEST-19: implement the investment-account lifecycle API with archival behavior and consistent validation responses.
+Complete INVEST-19 review and integration: apply the archival migration locally, verify the investment-account lifecycle API, and merge after CI passes.

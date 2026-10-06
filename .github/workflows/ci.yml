@@ -43,6 +43,7 @@ jobs:
       - name: Restore tests
         shell: pwsh
         run: |
+          dotnet restore tests/InvestManage.Application.Tests/InvestManage.Application.Tests.csproj
           dotnet restore tests/InvestManage.Domain.Tests/InvestManage.Domain.Tests.csproj
           dotnet restore tests/InvestManage.Infrastructure.Tests/InvestManage.Infrastructure.Tests.csproj
           dotnet restore tests/InvestManage.Api.Tests/InvestManage.Api.Tests.csproj
@@ -57,6 +58,7 @@ jobs:
       - name: Run tests
         shell: pwsh
         run: |
+          dotnet test tests/InvestManage.Application.Tests/InvestManage.Application.Tests.csproj --configuration Release --no-restore
           dotnet test tests/InvestManage.Domain.Tests/InvestManage.Domain.Tests.csproj --configuration Release --no-restore
           dotnet test tests/InvestManage.Infrastructure.Tests/InvestManage.Infrastructure.Tests.csproj --configuration Release --no-restore
           dotnet test tests/InvestManage.Api.Tests/InvestManage.Api.Tests.csproj --configuration Release --no-restore

@@ -19,7 +19,7 @@ The [InvestManage ERD](../output/pdf/InvestManage-ERD.pdf) shows the tables, key
 | Table | Columns | Purpose |
 | --- | --- | --- |
 | `InvestmentItems` | `NormalizedCode` | Search investments by normalized symbol or fund code. |
-| `InvestmentAccounts` | `UserId`, `Name` | List and locate a user's accounts. |
+| `InvestmentAccounts` | `UserId`, `IsArchived`, `Name` | List a user's active or archived accounts efficiently. |
 | `AccountInvestments` | `InvestmentAccountId`, `InvestmentItemId` (unique) | Prevent duplicate assignment of an investment to an account and list account holdings. |
 | `PriceHistory` | `InvestmentItemId`, `PriceDate`, `Type`, `Source` (unique) | Retrieve investment price ranges and reject duplicate prices from the same source and type for a date. |
 | `Transactions` | `AccountInvestmentId`, `TradeDate` | Rebuild an account investment's holdings in trade-date order. |
