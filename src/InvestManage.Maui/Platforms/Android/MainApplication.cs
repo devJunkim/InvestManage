@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace InvestManage.Maui;
+namespace InvestManage.Maui.Platforms.Android;
 
 [Application]
 public class MainApplication : MauiApplication

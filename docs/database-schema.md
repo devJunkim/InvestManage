@@ -2,6 +2,10 @@
 
 The SQL Server schema is defined by `InvestManageDbContext` in the Infrastructure project. The API is the only executable project that references Infrastructure and opens database connections.
 
+## Entity relationship diagram
+
+The [InvestManage ERD](../output/pdf/InvestManage-ERD.pdf) shows the tables, keys, relationships, SQL data types, indexes, and principal integrity rules on one A3 landscape page.
+
 ## Financial storage
 
 - Prices and unit prices use `decimal(19,8)`.
@@ -36,11 +40,19 @@ Generate a migration after changing the model:
 dotnet tool run dotnet-ef migrations add <MigrationName> --project src/InvestManage.Infrastructure/InvestManage.Infrastructure.csproj --context InvestManageDbContext --output-dir Persistence/Migrations
 ```
 
-Applying migrations with environment-specific, uncommitted connection configuration is covered by INVEST-18.
-
 ## Local SQL Server configuration
 
-The API optionally loads `src/InvestManage.Api/appsettings.Local.json`. This file is ignored by Git and is the appropriate place for local SQL Server credentials. Copy `appsettings.Local.example.json` when setting up a new development checkout, then replace the placeholder login and password locally.
+The API supports ignored local settings, .NET user secrets, and environment variables. Configuration precedence is command line, environment variables, user secrets, ignored local settings, and then the normal ASP.NET Core settings files.
+
+### Ignored local settings
+
+The API loads `src/InvestManage.Api/appsettings.Local.json` only in Development. This file is ignored by Git and is the simplest place for local SQL Server credentials.
+
+```powershell
+Copy-Item src/InvestManage.Api/appsettings.Local.example.json src/InvestManage.Api/appsettings.Local.json
+```
+
+Replace the placeholder login and password in the copied file. Never remove `appsettings.Local.json` from `.gitignore`.
 
 The current local template targets:
 
@@ -49,3 +61,45 @@ The current local template targets:
 - Authentication: SQL Server Authentication
 
 SQL Server must have mixed-mode authentication enabled, and the configured SQL login must have permission to connect to or create the database before applying migrations.
+
+### User secrets
+
+Visual Studio and `dotnet run` also load .NET user secrets in Development:
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:InvestManage" "Server=JK-DESKTOP;Database=InvestManage;User ID=<login>;Password=<password>;Integrated Security=False;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True" --project src/InvestManage.Api/InvestManage.Api.csproj
+```
+
+### Environment variables
+
+Use the standard ASP.NET Core double-underscore format for deployments and temporary shell configuration:
+
+```powershell
+$env:ConnectionStrings__InvestManage = "Server=<server>;Database=InvestManage;User ID=<login>;Password=<password>;Encrypt=True;TrustServerCertificate=False"
+```
+
+Production startup fails when the connection string is absent. Production credentials must come from the deployment environment or its secret manager, never from committed JSON.
+
+## Create or update the database
+
+From the repository root, restore the local EF tool and load the ignored local connection into the current process:
+
+```powershell
+dotnet tool restore
+$settings = Get-Content src/InvestManage.Api/appsettings.Local.json -Raw | ConvertFrom-Json
+$env:ConnectionStrings__InvestManage = $settings.ConnectionStrings.InvestManage
+```
+
+Apply all pending migrations:
+
+```powershell
+dotnet tool run dotnet-ef database update --project src/InvestManage.Infrastructure/InvestManage.Infrastructure.csproj --context InvestManageDbContext
+```
+
+Remove the temporary environment variable afterward:
+
+```powershell
+Remove-Item Env:ConnectionStrings__InvestManage
+```
+
+The command creates the configured database when the SQL login has permission and records applied migrations in `__EFMigrationsHistory`. It is safe to run again; only pending migrations are applied.
