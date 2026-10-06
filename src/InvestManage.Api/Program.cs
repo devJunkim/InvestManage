@@ -1,3 +1,5 @@
+using InvestManage.Api.Errors;
+using InvestManage.Application.Accounts;
 using InvestManage.Infrastructure;
 using InvestManage.Api.Configuration;
 
@@ -16,6 +18,9 @@ if (builder.Environment.IsDevelopment())
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+builder.Services.AddScoped<InvestmentAccountService>();
 
 var connectionString = DatabaseConfiguration.GetConnectionString(
     builder.Configuration,
@@ -26,6 +31,8 @@ if (!string.IsNullOrWhiteSpace(connectionString))
 }
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\InvestManage.Application\InvestManage.Application.csproj" />
     <ProjectReference Include="..\InvestManage.Domain\InvestManage.Domain.csproj" />
   </ItemGroup>
 

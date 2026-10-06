@@ -16,8 +16,9 @@ internal sealed class InvestmentAccountConfiguration : IEntityTypeConfiguration<
         builder.Property(account => account.Name).HasMaxLength(200).IsRequired();
         builder.Property(account => account.Type).HasConversion<int>().IsRequired();
         builder.Property(account => account.CurrencyCode).HasMaxLength(3).IsFixedLength().IsRequired();
+        builder.Property(account => account.IsArchived).HasDefaultValue(false).IsRequired();
 
-        builder.HasIndex(account => new { account.UserId, account.Name });
+        builder.HasIndex(account => new { account.UserId, account.IsArchived, account.Name });
 
         builder.HasOne<User>()
             .WithMany()
