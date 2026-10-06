@@ -1,5 +1,6 @@
 using InvestManage.Api.Errors;
 using InvestManage.Application.Accounts;
+using InvestManage.Application.Investments;
 using InvestManage.Infrastructure;
 using InvestManage.Api.Configuration;
 
@@ -21,6 +22,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddScoped<InvestmentAccountService>();
+builder.Services.AddScoped<InvestmentItemService>();
 
 var connectionString = DatabaseConfiguration.GetConnectionString(
     builder.Configuration,

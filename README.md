@@ -23,5 +23,5 @@ The API listens on `https://localhost:7094` during local development. The MAUI h
 
 The MAUI client knows only the API address. Database connection information belongs exclusively to the API. See [Database schema and local setup](docs/database-schema.md) for secure configuration and migration instructions.
 
-Phase 2 begins with the versioned [investment-account lifecycle API](docs/investment-accounts-api.md), including soft archival so financial history is never deleted with an account.
+Phase 2 includes the versioned [investment-account lifecycle API](docs/investment-accounts-api.md) and [investment-item management API](docs/investment-items-api.md). Both use soft archival so financial history is retained.
 

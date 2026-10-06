@@ -101,6 +101,7 @@ Deliverables:
 - API endpoints for creating, reading, updating, archiving, and reactivating investment accounts.
 - API endpoints for investment items.
 - Assign investments to one or more accounts.
+- Search, filter, archive, and reactivate investment items while retaining their financial history.
 - MAUI account and investment list/detail screens.
 - Search and filtering.
 
@@ -329,4 +330,4 @@ For each phase:
 
 ## Next action
 
-Complete INVEST-19 review and integration: apply the archival migration locally, verify the investment-account lifecycle API, and merge after CI passes.
+Complete INVEST-20 review and integration: apply the investment-item migration locally, verify item assignment and archival behavior, and merge after CI passes.

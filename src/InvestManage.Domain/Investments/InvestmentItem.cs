@@ -10,7 +10,9 @@ public sealed class InvestmentItem
         string name,
         InvestmentType type,
         string currencyCode,
-        string? provider = null)
+        string? provider = null,
+        int pricePrecision = 4,
+        string? notes = null)
     {
         if (!Enum.IsDefined(type))
         {
@@ -23,7 +25,10 @@ public sealed class InvestmentItem
         Name = Guard.Required(name, nameof(name));
         Type = type;
         CurrencyCode = NormalizeCurrencyCode(currencyCode);
-        Provider = string.IsNullOrWhiteSpace(provider) ? null : provider.Trim();
+        Provider = NormalizeOptional(provider);
+        PricePrecision = ValidatePricePrecision(pricePrecision);
+        Notes = NormalizeOptional(notes);
+        IsArchived = false;
     }
 
     public Guid Id { get; private set; }
@@ -40,6 +45,40 @@ public sealed class InvestmentItem
 
     public string? Provider { get; private set; }
 
+    public int PricePrecision { get; private set; }
+
+    public string? Notes { get; private set; }
+
+    public bool IsArchived { get; private set; }
+
+    public void UpdateDetails(
+        string code,
+        string name,
+        InvestmentType type,
+        string currencyCode,
+        string? provider,
+        int pricePrecision,
+        string? notes)
+    {
+        if (!Enum.IsDefined(type))
+        {
+            throw new ArgumentOutOfRangeException(nameof(type), type, "The investment type is not supported.");
+        }
+
+        Code = Guard.Required(code, nameof(code));
+        NormalizedCode = Code.ToUpperInvariant();
+        Name = Guard.Required(name, nameof(name));
+        Type = type;
+        CurrencyCode = NormalizeCurrencyCode(currencyCode);
+        Provider = NormalizeOptional(provider);
+        PricePrecision = ValidatePricePrecision(pricePrecision);
+        Notes = NormalizeOptional(notes);
+    }
+
+    public void Archive() => IsArchived = true;
+
+    public void Reactivate() => IsArchived = false;
+
     private static string NormalizeCurrencyCode(string currencyCode)
     {
         var currency = Guard.Required(currencyCode, nameof(currencyCode)).ToUpperInvariant();
@@ -51,4 +90,20 @@ public sealed class InvestmentItem
 
         return currency;
     }
+
+    private static int ValidatePricePrecision(int pricePrecision)
+    {
+        if (pricePrecision is < 0 or > 8)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(pricePrecision),
+                pricePrecision,
+                "Price precision must be between zero and eight decimal places.");
+        }
+
+        return pricePrecision;
+    }
+
+    private static string? NormalizeOptional(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }
