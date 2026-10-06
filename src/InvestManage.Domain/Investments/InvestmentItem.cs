@@ -26,19 +26,19 @@ public sealed class InvestmentItem
         Provider = string.IsNullOrWhiteSpace(provider) ? null : provider.Trim();
     }
 
-    public Guid Id { get; }
+    public Guid Id { get; private set; }
 
-    public string Code { get; }
+    public string Code { get; private set; }
 
-    public string NormalizedCode { get; }
+    public string NormalizedCode { get; private set; }
 
-    public string Name { get; }
+    public string Name { get; private set; }
 
-    public InvestmentType Type { get; }
+    public InvestmentType Type { get; private set; }
 
-    public string CurrencyCode { get; }
+    public string CurrencyCode { get; private set; }
 
-    public string? Provider { get; }
+    public string? Provider { get; private set; }
 
     private static string NormalizeCurrencyCode(string currencyCode)
     {

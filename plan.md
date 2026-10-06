@@ -329,4 +329,4 @@ For each phase:
 
 ## Next action
 
-Continue Phase 1 with INVEST-17: add EF Core SQL Server persistence and the initial migration. Before creating the migration, confirm the local SQL Server instance name, authentication method, preferred database name, and whether the first release is single-user or should include user identity immediately.
+Continue Phase 1 with INVEST-18: add secure database configuration, migration guidance, and persistence tests for the selected local SQL Server instance and authentication method.

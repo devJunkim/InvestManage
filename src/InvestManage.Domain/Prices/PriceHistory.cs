@@ -25,15 +25,15 @@ public sealed class PriceHistory
         Source = Guard.Required(source, nameof(source));
     }
 
-    public Guid Id { get; }
+    public Guid Id { get; private set; }
 
-    public Guid InvestmentItemId { get; }
+    public Guid InvestmentItemId { get; private set; }
 
-    public DateOnly PriceDate { get; }
+    public DateOnly PriceDate { get; private set; }
 
-    public decimal Price { get; }
+    public decimal Price { get; private set; }
 
-    public PriceType Type { get; }
+    public PriceType Type { get; private set; }
 
-    public string Source { get; }
+    public string Source { get; private set; }
 }
