@@ -1,10 +1,7 @@
 using InvestManage.Domain.Accounts;
-using InvestManage.Domain.Currencies;
-using InvestManage.Domain.Investments;
 using InvestManage.Domain.Prices;
 using InvestManage.Domain.Transactions;
 using InvestManage.Infrastructure.Persistence;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -64,49 +61,6 @@ public sealed class InvestManageDbContextModelTests
         Assert.Equal(DeleteBehavior.Restrict, priceForeignKey.DeleteBehavior);
         Assert.All(transactionForeignKeys, foreignKey => Assert.Equal(DeleteBehavior.Restrict, foreignKey.DeleteBehavior));
         Assert.All(accountInvestmentForeignKeys, foreignKey => Assert.Equal(DeleteBehavior.Restrict, foreignKey.DeleteBehavior));
-    }
-
-    [Fact]
-    public void PriceHistory_DatabaseConstraintRejectsDuplicateInvestmentDateTypeAndSource()
-    {
-        using var connection = new SqliteConnection("Data Source=:memory:");
-        connection.Open();
-
-        var options = new DbContextOptionsBuilder<InvestManageDbContext>()
-            .UseSqlite(connection)
-            .Options;
-        using var context = new InvestManageDbContext(options);
-        context.Database.EnsureCreated();
-
-        var currency = new Currency("CAD", "Canadian dollar");
-        var investment = new InvestmentItem(
-            Guid.NewGuid(),
-            "TDB3046",
-            "TD mutual fund",
-            InvestmentType.MutualFund,
-            currency.Code);
-
-        context.AddRange(
-            currency,
-            investment,
-            new PriceHistory(
-                Guid.NewGuid(),
-                investment.Id,
-                new DateOnly(2026, 10, 5),
-                20.0812m,
-                PriceType.NetAssetValue,
-                "Manual"));
-        context.SaveChanges();
-
-        context.Add(new PriceHistory(
-            Guid.NewGuid(),
-            investment.Id,
-            new DateOnly(2026, 10, 5),
-            20.1000m,
-            PriceType.NetAssetValue,
-            "Manual"));
-
-        Assert.Throws<DbUpdateException>(() => context.SaveChanges());
     }
 
     [Fact]

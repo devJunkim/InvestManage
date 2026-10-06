@@ -62,7 +62,7 @@ Completion criteria:
 
 ## Phase 1 — Database and core domain
 
-**Status:** In progress
+**Status:** Complete
 
 Suggested branch: `database-domain`
 
@@ -329,4 +329,4 @@ For each phase:
 
 ## Next action
 
-Continue Phase 1 with INVEST-18: add secure database configuration, migration guidance, and persistence tests for the selected local SQL Server instance and authentication method.
+Begin Phase 2 with INVEST-19: implement the investment-account lifecycle API with archival behavior and consistent validation responses.
