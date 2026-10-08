@@ -4,6 +4,7 @@ using InvestManage.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvestManage.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(InvestManageDbContext))]
-    partial class InvestManageDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261007000253_AddUserCredentials")]
+    partial class AddUserCredentials
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,18 +97,6 @@ namespace InvestManage.Infrastructure.Persistence.Migrations
                     b.HasKey("Code");
 
                     b.ToTable("Currencies", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Code = "CAD",
-                            Name = "Canadian dollar"
-                        },
-                        new
-                        {
-                            Code = "USD",
-                            Name = "United States dollar"
-                        });
                 });
 
             modelBuilder.Entity("InvestManage.Domain.Investments.InvestmentItem", b =>

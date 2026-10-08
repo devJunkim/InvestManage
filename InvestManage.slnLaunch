@@ -1,6 +1,6 @@
 [
   {
-    "Name": "API + MAUI (Windows)",
+    "Name": "API + WPF",
     "Projects": [
       {
         "Path": "src\\InvestManage.Api\\InvestManage.Api.csproj",
@@ -8,9 +8,8 @@
         "DebugTarget": "https"
       },
       {
-        "Path": "src\\InvestManage.Maui\\InvestManage.Maui.csproj",
-        "Action": "Start",
-        "DebugTarget": "Windows Machine"
+        "Path": "src\\InvestManage.Wpf\\InvestManage.Wpf.csproj",
+        "Action": "Start"
       }
     ]
   }

@@ -12,5 +12,8 @@ internal sealed class CurrencyConfiguration : IEntityTypeConfiguration<Currency>
         builder.HasKey(currency => currency.Code);
         builder.Property(currency => currency.Code).HasMaxLength(3).IsFixedLength().ValueGeneratedNever();
         builder.Property(currency => currency.Name).HasMaxLength(100).IsRequired();
+        builder.HasData(
+            new Currency("CAD", "Canadian dollar"),
+            new Currency("USD", "United States dollar"));
     }
 }
