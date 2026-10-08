@@ -1,4 +1,3 @@
-using InvestManage.Domain.Currencies;
 using InvestManage.Domain.Investments;
 using InvestManage.Domain.Prices;
 using InvestManage.Infrastructure.Persistence;
@@ -83,15 +82,14 @@ public sealed class InvestManageDbContextConstraintTests
 
     private static InvestmentItem AddInvestment(InvestManageDbContext context)
     {
-        var currency = new Currency("CAD", "Canadian dollar");
         var investment = new InvestmentItem(
             Guid.NewGuid(),
             "TDB3046",
             "TD mutual fund",
             InvestmentType.MutualFund,
-            currency.Code);
+            "CAD");
 
-        context.AddRange(currency, investment);
+        context.InvestmentItems.Add(investment);
         context.SaveChanges();
         return investment;
     }

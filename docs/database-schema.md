@@ -18,6 +18,8 @@ The [InvestManage ERD](../output/pdf/InvestManage-ERD.pdf) shows the tables, key
 
 | Table | Columns | Purpose |
 | --- | --- | --- |
+| `Users` | `NormalizedEmail` (unique) | Support case-insensitive email login and prevent duplicate registration. |
+| `Users` | `NormalizedLoginId` (unique) | Support case-insensitive Login ID login and prevent duplicate registration. |
 | `InvestmentItems` | `IsArchived`, `NormalizedCode` | List active or archived investments and search by normalized symbol or fund code. |
 | `InvestmentItems` | `IsArchived`, `Type`, `CurrencyCode` | Filter active or archived investments by type and currency. |
 | `InvestmentAccounts` | `UserId`, `IsArchived`, `Name` | List a user's active or archived accounts efficiently. |
@@ -26,6 +28,8 @@ The [InvestManage ERD](../output/pdf/InvestManage-ERD.pdf) shows the tables, key
 | `Transactions` | `AccountInvestmentId`, `TradeDate` | Rebuild an account investment's holdings in trade-date order. |
 
 SQL Server also creates supporting indexes for foreign keys that are not already covered by these indexes. All relationships use restrictive deletes so referenced financial history cannot be removed through cascading deletion.
+
+User passwords are never stored directly. `Users.PasswordHash` contains the versioned hash produced by ASP.NET Core's password hasher. Existing users that predate credential support receive legacy placeholder identities and must register a new credentialed user.
 
 ## Migrations
 

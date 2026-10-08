@@ -10,7 +10,15 @@ public sealed class DomainRelationshipTests
     [Fact]
     public void Entities_PreserveIdentifiersForCoreRelationships()
     {
-        var user = new User(Guid.NewGuid(), "Jun");
+        var user = new User(
+            Guid.NewGuid(),
+            "Jun",
+            "Kim",
+            "jun@example.test",
+            "JUN@EXAMPLE.TEST",
+            "junkim",
+            "JUNKIM",
+            "password-hash");
         var account = new InvestmentAccount(
             Guid.NewGuid(),
             user.Id,

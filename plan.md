@@ -4,7 +4,7 @@ This document is the living roadmap and source of truth for InvestManage. Update
 
 ## Product goal
 
-Build an API-first investment tracker that can replace the relevant investing features currently handled in Quicken. The first client is a Windows .NET MAUI application. Angular, React, and Vue clients may be added later against the same API.
+Build an API-first investment tracker that can replace the relevant investing features currently handled in Quicken. The first client is a Windows WPF application. Angular, React, and Vue clients may be added later against the same API.
 
 The application must support:
 
@@ -20,7 +20,7 @@ The application must support:
 ## Architecture decisions
 
 - **Runtime:** .NET 10.
-- **Desktop/mobile client:** .NET MAUI, starting with Windows.
+- **Desktop client:** WPF on .NET 10 for Windows.
 - **Backend:** ASP.NET Core REST API with OpenAPI.
 - **Database:** Microsoft SQL Server through Entity Framework Core.
 - **Structure:** Domain, Application, Contracts, API, and client projects remain separated.
@@ -102,8 +102,9 @@ Deliverables:
 - API endpoints for investment items.
 - Assign investments to one or more accounts.
 - Search, filter, archive, and reactivate investment items while retaining their financial history.
-- MAUI account and investment list/detail screens.
+- WPF account and investment list/detail screens.
 - Search and filtering.
+- A testable .NET API-client layer that translates API problem details into field-level UI messages.
 
 Initial investment fields:
 
@@ -114,7 +115,7 @@ Completion criteria:
 
 - An account can contain multiple investment items.
 - Archived records disappear from default lists without losing history.
-- Validation failures are consistent between the API and MAUI client.
+- Validation failures are consistent between the API and WPF client.
 
 ## Phase 3 — Transactions and holdings
 
@@ -175,14 +176,14 @@ Deliverables:
 Completion criteria:
 
 - Results match a set of manually verified financial scenarios.
-- The same calculation services support MAUI and future web clients.
+- The same calculation services support WPF and future web clients.
 - Missing or stale prices are visible to the user rather than silently hidden.
 
-## Phase 6 — MAUI MVP
+## Phase 6 — WPF MVP
 
 **Status:** Planned
 
-Suggested branch: `maui-mvp`
+Suggested branch: `wpf-mvp`
 
 Deliverables:
 
@@ -196,7 +197,7 @@ Deliverables:
 
 Completion criteria:
 
-- The complete daily investment-tracking workflow can be performed from the Windows MAUI application.
+- The complete daily investment-tracking workflow can be performed from the Windows WPF application.
 - Common operations are covered by view-model or service-level unit tests.
 
 ## Phase 7 — Charts and performance
@@ -224,12 +225,14 @@ Completion criteria:
 
 **Status:** Planned
 
+Credential registration, secure password hashing, and local-client login by email or Login ID were introduced early with INVEST-21 so the WPF account workflow no longer exposes database GUIDs. Phase 8 remains responsible for security enforcement across clients and API resources.
+
 Suggested branch: `authentication`
 
 Deliverables:
 
 - ASP.NET Core Identity or an equivalent well-supported identity implementation.
-- Secure login and password storage.
+- Bearer-token issuance for the existing credential login flow.
 - Token-based API authentication suitable for native and web clients.
 - Ownership and authorization checks for every account-scoped resource.
 - Secrets kept outside source control.
@@ -277,11 +280,11 @@ Deliverables:
 - Publish a stable OpenAPI contract.
 - Generate or share typed API clients instead of duplicating request models manually.
 - Keep all financial business rules in the API/domain layers.
-- Bring each client to essential feature parity with the MAUI workflow before starting the next.
+- Bring each client to essential feature parity with the WPF workflow before starting the next.
 
 Completion criteria:
 
-- A web client can perform the same essential account, investment, transaction, price, and portfolio operations as MAUI.
+- A web client can perform the same essential account, investment, transaction, price, and portfolio operations as WPF.
 - UI implementations do not calculate authoritative financial results independently.
 
 ## Phase 11 — Deployment and operations
@@ -292,7 +295,7 @@ Deliverables:
 
 - Containerize the API and each web client as needed.
 - Run SQL Server separately with persistent storage and backups.
-- Install MAUI directly on Windows; do not place the MAUI GUI in a container.
+- Install WPF directly on Windows; do not place the desktop GUI in a container.
 - Configure connection strings and API addresses through environment-specific configuration.
 - Add health checks, structured logging, database migration procedures, and recovery documentation.
 
@@ -330,4 +333,4 @@ For each phase:
 
 ## Next action
 
-Complete INVEST-20 review and integration: apply the investment-item migration locally, verify item assignment and archival behavior, and merge after CI passes.
+Complete INVEST-21 review and integration: verify the Windows WPF account, investment, and assignment workflows against the local API, and merge after CI passes.

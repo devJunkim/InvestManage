@@ -1,7 +1,6 @@
 using InvestManage.Application.Accounts;
 using InvestManage.Application.Investments;
 using InvestManage.Domain.Accounts;
-using InvestManage.Domain.Currencies;
 using InvestManage.Domain.Investments;
 using InvestManage.Domain.Prices;
 using InvestManage.Domain.Transactions;
@@ -52,8 +51,15 @@ public sealed class InvestManageApiFactory : WebApplicationFactory<Program>
         var context = scope.ServiceProvider.GetRequiredService<InvestManageDbContext>();
         await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
-        context.Users.Add(new User(UserId, "Integration test user"));
-        context.Currencies.Add(new Currency("CAD", "Canadian dollar"));
+        context.Users.Add(new User(
+            UserId,
+            "Integration",
+            "User",
+            "integration@example.test",
+            "INTEGRATION@EXAMPLE.TEST",
+            "integration",
+            "INTEGRATION",
+            "not-used-by-account-tests"));
         await context.SaveChangesAsync();
     }
 
@@ -81,6 +87,17 @@ public sealed class InvestManageApiFactory : WebApplicationFactory<Program>
 
         context.AddRange(investment, holding, transaction);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<string> ReadPasswordHashAsync(Guid userId)
+    {
+        using var scope = Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<InvestManageDbContext>();
+        return await context.Users
+            .AsNoTracking()
+            .Where(user => user.Id == userId)
+            .Select(user => user.PasswordHash)
+            .SingleAsync();
     }
 
     public async Task<(bool IsArchived, int Holdings, int Transactions)> ReadHistoryStateAsync(

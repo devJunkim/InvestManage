@@ -22,7 +22,6 @@ jobs:
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_NOLOGO: true
-      MAUI_WINDOWS_FRAMEWORK: net10.0-windows10.0.19041.0
 
     steps:
       - name: Check out repository
@@ -37,8 +36,8 @@ jobs:
       - name: Restore API
         run: dotnet restore src/InvestManage.Api/InvestManage.Api.csproj
 
-      - name: Restore MAUI Windows
-        run: dotnet restore src/InvestManage.Maui/InvestManage.Maui.csproj --runtime win-x64 -p:BuildWindowsOnly=true
+      - name: Restore WPF
+        run: dotnet restore src/InvestManage.Wpf/InvestManage.Wpf.csproj
 
       - name: Restore tests
         shell: pwsh
@@ -47,13 +46,14 @@ jobs:
           dotnet restore tests/InvestManage.Domain.Tests/InvestManage.Domain.Tests.csproj
           dotnet restore tests/InvestManage.Infrastructure.Tests/InvestManage.Infrastructure.Tests.csproj
           dotnet restore tests/InvestManage.Api.Tests/InvestManage.Api.Tests.csproj
-          dotnet restore tests/InvestManage.Maui.Tests/InvestManage.Maui.Tests.csproj
+          dotnet restore tests/InvestManage.Client.Tests/InvestManage.Client.Tests.csproj
+          dotnet restore tests/InvestManage.Wpf.Tests/InvestManage.Wpf.Tests.csproj
 
       - name: Build API
         run: dotnet build src/InvestManage.Api/InvestManage.Api.csproj --configuration Release --no-restore
 
-      - name: Build MAUI Windows
-        run: dotnet build src/InvestManage.Maui/InvestManage.Maui.csproj --configuration Release --framework ${{ env.MAUI_WINDOWS_FRAMEWORK }} --runtime win-x64 --no-restore -p:BuildWindowsOnly=true
+      - name: Build WPF
+        run: dotnet build src/InvestManage.Wpf/InvestManage.Wpf.csproj --configuration Release --no-restore
 
       - name: Run tests
         shell: pwsh
@@ -62,4 +62,5 @@ jobs:
           dotnet test tests/InvestManage.Domain.Tests/InvestManage.Domain.Tests.csproj --configuration Release --no-restore
           dotnet test tests/InvestManage.Infrastructure.Tests/InvestManage.Infrastructure.Tests.csproj --configuration Release --no-restore
           dotnet test tests/InvestManage.Api.Tests/InvestManage.Api.Tests.csproj --configuration Release --no-restore
-          dotnet test tests/InvestManage.Maui.Tests/InvestManage.Maui.Tests.csproj --configuration Release --no-restore
+          dotnet test tests/InvestManage.Client.Tests/InvestManage.Client.Tests.csproj --configuration Release --no-restore
+          dotnet test tests/InvestManage.Wpf.Tests/InvestManage.Wpf.Tests.csproj --configuration Release --no-restore
