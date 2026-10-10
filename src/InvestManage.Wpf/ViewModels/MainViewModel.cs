@@ -13,9 +13,11 @@ public sealed class MainViewModel : OperationalViewModel
         UserAccess = new UserAccessViewModel(apiClient);
         Accounts = new AccountsViewModel(apiClient);
         Investments = new InvestmentsViewModel(apiClient);
+        Transactions = new TransactionsViewModel(apiClient);
         UserAccess.CurrentUserChanged += user =>
         {
             Accounts.SetCurrentUser(user);
+            Transactions.SetCurrentUser(user);
             OnPropertyChanged(nameof(IsAuthenticated));
         };
         CheckApiCommand = new AsyncCommand(CheckApiAsync);
@@ -26,6 +28,8 @@ public sealed class MainViewModel : OperationalViewModel
     public UserAccessViewModel UserAccess { get; }
 
     public InvestmentsViewModel Investments { get; }
+
+    public TransactionsViewModel Transactions { get; }
 
     public bool IsAuthenticated => UserAccess.IsAuthenticated;
 

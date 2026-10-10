@@ -3,6 +3,7 @@ using System.Text;
 using InvestManage.Client.Services;
 using InvestManage.Contracts.Accounts;
 using InvestManage.Contracts.Investments;
+using InvestManage.Contracts.Transactions;
 using InvestManage.Contracts.Users;
 
 namespace InvestManage.Client.Tests;
@@ -92,6 +93,37 @@ public sealed class InvestManageApiClientTests
         Assert.Equal($"api/v1/investment-accounts/{accountId:D}/archive", RelativeUri(handler.Requests[0]));
         Assert.Equal($"api/v1/investment-items/{itemId:D}/reactivate", RelativeUri(handler.Requests[1]));
         Assert.Equal($"api/v1/investment-accounts/{accountId:D}/investments/{itemId:D}", RelativeUri(handler.Requests[2]));
+    }
+
+    [Fact]
+    public async Task CreateTransaction_UsesAssignedInvestmentRouteAndPreservesPrecision()
+    {
+        var accountId = Guid.Parse("23bcd69b-6806-4981-a4fc-0ee93a27c123");
+        var itemId = Guid.Parse("1fe4ca47-03e6-4be9-87de-178b66e3e550");
+        var handler = new RecordingHandler(_ => JsonResponse(HttpStatusCode.Created, $$"""
+            {"id":"9ca83866-463a-4e91-a5d4-8c4f6c8a3f01","accountId":"{{accountId}}","investmentItemId":"{{itemId}}","type":"Buy","tradeDate":"2026-10-09","settlementDate":null,"quantity":12.345678,"unitPrice":20.0812,"fees":0,"currencyCode":"CAD","notes":null,"createdAtUtc":"2026-10-09T12:00:00Z"}
+            """));
+        var client = CreateClient(handler);
+
+        var result = await client.CreateTransactionAsync(
+            accountId,
+            itemId,
+            new CreateTransactionRequest(
+                TransactionType.Buy,
+                new DateOnly(2026, 10, 9),
+                null,
+                12.345678m,
+                20.0812m,
+                0,
+                "CAD",
+                null));
+
+        Assert.Equal(12.345678m, result.Quantity);
+        Assert.Equal(20.0812m, result.UnitPrice);
+        Assert.Equal(
+            $"api/v1/investment-accounts/{accountId:D}/investments/{itemId:D}/transactions",
+            RelativeUri(handler.Requests.Single()));
+        Assert.Contains("12.345678", handler.Requests.Single().Body);
     }
 
     private static InvestManageApiClient CreateClient(HttpMessageHandler handler) =>

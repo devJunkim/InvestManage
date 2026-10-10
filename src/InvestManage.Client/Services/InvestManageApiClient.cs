@@ -3,6 +3,7 @@ using System.Text.Json;
 using InvestManage.Contracts;
 using InvestManage.Contracts.Accounts;
 using InvestManage.Contracts.Investments;
+using InvestManage.Contracts.Transactions;
 using InvestManage.Contracts.Users;
 
 namespace InvestManage.Client.Services;
@@ -95,6 +96,17 @@ public sealed class InvestManageApiClient(HttpClient httpClient) : IInvestManage
             HttpMethod.Post,
             $"api/v1/investment-accounts/{accountId:D}/investments/{investmentItemId:D}",
             null,
+            cancellationToken);
+
+    public Task<TransactionResponse> CreateTransactionAsync(
+        Guid accountId,
+        Guid investmentItemId,
+        CreateTransactionRequest request,
+        CancellationToken cancellationToken = default) =>
+        SendForResponseAsync<TransactionResponse>(
+            HttpMethod.Post,
+            $"api/v1/investment-accounts/{accountId:D}/investments/{investmentItemId:D}/transactions",
+            request,
             cancellationToken);
 
     private async Task<T> GetAsync<T>(string path, CancellationToken cancellationToken)

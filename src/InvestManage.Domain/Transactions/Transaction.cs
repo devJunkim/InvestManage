@@ -4,6 +4,11 @@ namespace InvestManage.Domain.Transactions;
 
 public sealed class Transaction
 {
+    private Transaction()
+    {
+        CurrencyCode = null!;
+    }
+
     public Transaction(
         Guid id,
         Guid accountInvestmentId,
@@ -13,7 +18,9 @@ public sealed class Transaction
         decimal unitPrice,
         decimal fees,
         string currencyCode,
-        DateOnly? settlementDate = null)
+        DateOnly? settlementDate = null,
+        string? notes = null,
+        DateTimeOffset? createdAtUtc = null)
     {
         if (!Enum.IsDefined(type))
         {
@@ -34,6 +41,8 @@ public sealed class Transaction
         UnitPrice = Guard.Positive(unitPrice, nameof(unitPrice));
         Fees = Guard.NotNegative(fees, nameof(fees));
         CurrencyCode = NormalizeCurrencyCode(currencyCode);
+        Notes = NormalizeNotes(notes);
+        CreatedAtUtc = createdAtUtc ?? DateTimeOffset.UtcNow;
     }
 
     public Guid Id { get; private set; }
@@ -54,6 +63,10 @@ public sealed class Transaction
 
     public string CurrencyCode { get; private set; }
 
+    public string? Notes { get; private set; }
+
+    public DateTimeOffset CreatedAtUtc { get; private set; }
+
     private static string NormalizeCurrencyCode(string currencyCode)
     {
         var currency = Guard.Required(currencyCode, nameof(currencyCode)).ToUpperInvariant();
@@ -64,5 +77,21 @@ public sealed class Transaction
         }
 
         return currency;
+    }
+
+    private static string? NormalizeNotes(string? notes)
+    {
+        if (string.IsNullOrWhiteSpace(notes))
+        {
+            return null;
+        }
+
+        var normalized = notes.Trim();
+        if (normalized.Length > 2000)
+        {
+            throw new ArgumentException("Notes cannot exceed 2000 characters.", nameof(notes));
+        }
+
+        return normalized;
     }
 }

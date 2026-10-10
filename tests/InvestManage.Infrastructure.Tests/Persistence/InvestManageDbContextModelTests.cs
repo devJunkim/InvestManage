@@ -28,14 +28,16 @@ public sealed class InvestManageDbContextModelTests
     }
 
     [Fact]
-    public void Transaction_HasAccountAndTradeDateIndex()
+    public void Transaction_HasDeterministicLedgerIndex()
     {
         var entity = _model.FindEntityType(typeof(Transaction));
 
         Assert.Contains(entity!.GetIndexes(), candidate =>
             candidate.Properties.Select(property => property.Name).SequenceEqual([
                 nameof(Transaction.AccountInvestmentId),
-                nameof(Transaction.TradeDate)
+                nameof(Transaction.TradeDate),
+                nameof(Transaction.CreatedAtUtc),
+                nameof(Transaction.Id)
             ]));
     }
 

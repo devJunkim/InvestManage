@@ -26,3 +26,5 @@ The WPF client knows only the API address. Database connection information belon
 
 Phase 2 includes the versioned [investment-account lifecycle API](docs/investment-accounts-api.md), [investment-item management API](docs/investment-items-api.md), and [WPF account and investment workflow](docs/wpf-account-investment-management.md). Both resource types use soft archival so financial history is retained.
 
+Phase 3 begins with [buy and sell transaction entry](docs/transaction-entry.md), including fractional units, field-level validation, and dated-ledger overselling protection in both the API and WPF client.
+

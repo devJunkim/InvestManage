@@ -2,6 +2,8 @@
 
 INVEST-21 provides the first Windows-native management workflow. The WPF application uses MVVM and communicates exclusively with the ASP.NET Core API through `InvestManage.Client`.
 
+`MainWindow.xaml` is only the application shell and tab host. Each workflow is isolated in its own WPF `UserControl` under `Views` (`UserAccessView`, `AccountsView`, `InvestmentsView`, and `TransactionsView`) and receives its dedicated view model through data binding.
+
 ## Start in Visual Studio
 
 Open `InvestManage.sln`, select the **API + WPF** shared launch profile, and press **F5**. The API starts on `https://localhost:7094` and the WPF application opens alongside it.

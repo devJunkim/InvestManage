@@ -2,6 +2,7 @@ using InvestManage.Api.Errors;
 using InvestManage.Api.Security;
 using InvestManage.Application.Accounts;
 using InvestManage.Application.Investments;
+using InvestManage.Application.Transactions;
 using InvestManage.Application.Users;
 using InvestManage.Infrastructure;
 using InvestManage.Api.Configuration;
@@ -25,6 +26,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddScoped<InvestmentAccountService>();
 builder.Services.AddScoped<InvestmentItemService>();
+builder.Services.AddScoped<TransactionService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<IUserCredentialHasher, UserCredentialHasher>();
 
