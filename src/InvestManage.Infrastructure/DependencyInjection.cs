@@ -1,5 +1,6 @@
 using InvestManage.Application.Accounts;
 using InvestManage.Application.Investments;
+using InvestManage.Application.Transactions;
 using InvestManage.Application.Users;
 using InvestManage.Infrastructure.Persistence;
 using InvestManage.Infrastructure.Persistence.Repositories;
@@ -20,6 +21,7 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString, sqlServer => sqlServer.EnableRetryOnFailure()));
         services.AddScoped<IInvestmentAccountRepository, InvestmentAccountRepository>();
         services.AddScoped<IInvestmentItemRepository, InvestmentItemRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
 
         return services;

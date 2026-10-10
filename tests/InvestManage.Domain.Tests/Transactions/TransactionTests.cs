@@ -16,11 +16,15 @@ public sealed class TransactionTests
             20.0812m,
             9.99m,
             "cad",
-            new DateOnly(2026, 10, 5));
+            new DateOnly(2026, 10, 5),
+            "  Initial purchase  ",
+            new DateTimeOffset(2026, 10, 3, 12, 0, 0, TimeSpan.Zero));
 
         Assert.Equal(12.345678m, transaction.Quantity);
         Assert.Equal(20.0812m, transaction.UnitPrice);
         Assert.Equal("CAD", transaction.CurrencyCode);
+        Assert.Equal("Initial purchase", transaction.Notes);
+        Assert.Equal(new DateTimeOffset(2026, 10, 3, 12, 0, 0, TimeSpan.Zero), transaction.CreatedAtUtc);
         Assert.IsType<DateOnly>(transaction.TradeDate);
     }
 

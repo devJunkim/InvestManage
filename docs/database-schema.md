@@ -25,7 +25,7 @@ The [InvestManage ERD](../output/pdf/InvestManage-ERD.pdf) shows the tables, key
 | `InvestmentAccounts` | `UserId`, `IsArchived`, `Name` | List a user's active or archived accounts efficiently. |
 | `AccountInvestments` | `InvestmentAccountId`, `InvestmentItemId` (unique) | Prevent duplicate assignment of an investment to an account and list account holdings. |
 | `PriceHistory` | `InvestmentItemId`, `PriceDate`, `Type`, `Source` (unique) | Retrieve investment price ranges and reject duplicate prices from the same source and type for a date. |
-| `Transactions` | `AccountInvestmentId`, `TradeDate` | Rebuild an account investment's holdings in trade-date order. |
+| `Transactions` | `AccountInvestmentId`, `TradeDate`, `CreatedAtUtc`, `Id` | Rebuild an account investment's holdings in deterministic ledger order. |
 
 SQL Server also creates supporting indexes for foreign keys that are not already covered by these indexes. All relationships use restrictive deletes so referenced financial history cannot be removed through cascading deletion.
 
@@ -108,3 +108,9 @@ Remove-Item Env:ConnectionStrings__InvestManage
 ```
 
 The command creates the configured database when the SQL login has permission and records applied migrations in `__EFMigrationsHistory`. It is safe to run again; only pending migrations are applied.
+
+## Reset local application data
+
+Use [`database/scripts/reset-application-data.sql`](../database/scripts/reset-application-data.sql) when a development database needs to be cleared. Review the target database and set `@ConfirmReset` to `1` before executing it.
+
+The script clears tables in foreign-key dependency order inside one transaction. It preserves `__EFMigrationsHistory` and, by default, the required CAD/USD currency reference rows. Set `@DeleteCurrencyReferenceData` to `1` only when every domain table must be completely empty.

@@ -29,8 +29,16 @@ internal sealed class TransactionConfiguration : IEntityTypeConfiguration<Transa
         builder.Property(transaction => transaction.UnitPrice).HasPrecision(19, 8).IsRequired();
         builder.Property(transaction => transaction.Fees).HasPrecision(19, 4).IsRequired();
         builder.Property(transaction => transaction.CurrencyCode).HasMaxLength(3).IsFixedLength().IsRequired();
+        builder.Property(transaction => transaction.Notes).HasMaxLength(2000);
+        builder.Property(transaction => transaction.CreatedAtUtc).IsRequired();
 
-        builder.HasIndex(transaction => new { transaction.AccountInvestmentId, transaction.TradeDate });
+        builder.HasIndex(transaction => new
+        {
+            transaction.AccountInvestmentId,
+            transaction.TradeDate,
+            transaction.CreatedAtUtc,
+            transaction.Id
+        });
 
         builder.HasOne<AccountInvestment>()
             .WithMany()

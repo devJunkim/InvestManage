@@ -1,0 +1,71 @@
+<UserControl x:Class="InvestManage.Wpf.Views.TransactionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Load accounts" Command="{Binding RefreshAccountsCommand}" />
+            <TextBlock Text="{Binding StatusMessage}" Foreground="#334155"
+                       VerticalAlignment="Center" Margin="14,0,0,0" />
+        </StackPanel>
+        <TextBlock Grid.Row="1" Text="{Binding ErrorMessage}" Foreground="#B42318"
+                   TextWrapping="Wrap" Margin="0,8,0,10" />
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="Transaction target">
+                <StackPanel>
+                    <TextBlock Text="Account" />
+                    <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding SelectedAccount}"
+                              DisplayMemberPath="Name" />
+                    <TextBlock Text="Assigned investment" />
+                    <ComboBox ItemsSource="{Binding Investments}" SelectedItem="{Binding SelectedInvestment}"
+                              DisplayMemberPath="Name" />
+                    <TextBlock Text="Select an active account and one of its assigned investments."
+                               Foreground="#64748B" TextWrapping="Wrap" Margin="0,8,0,0" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Grid.Column="2" Header="Buy or sell">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Transaction type" />
+                        <ComboBox ItemsSource="{Binding TransactionTypes}" SelectedItem="{Binding SelectedType}" />
+                        <TextBlock Text="Trade date" />
+                        <DatePicker SelectedDate="{Binding TradeDate}" />
+                        <TextBlock Text="Settlement date (optional)" />
+                        <DatePicker SelectedDate="{Binding SettlementDate}" />
+                        <TextBlock Text="Quantity" />
+                        <TextBox Text="{Binding QuantityText, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="Unit price" />
+                        <TextBox Text="{Binding UnitPriceText, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="Amount" />
+                        <TextBox Text="{Binding AmountText, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="Fees" />
+                        <TextBox Text="{Binding Fees, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="Currency" />
+                        <TextBox Text="{Binding CurrencyCode, UpdateSourceTrigger=PropertyChanged}" MaxLength="3" />
+                        <TextBlock Text="Notes" />
+                        <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                                 AcceptsReturn="True" TextWrapping="Wrap" Height="80"
+                                 VerticalScrollBarVisibility="Auto" />
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="Calculate" Click="CalculateClicked" />
+                            <Button Content="Save transaction" Click="SaveClicked" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,6 +1,7 @@
 using InvestManage.Contracts;
 using InvestManage.Contracts.Accounts;
 using InvestManage.Contracts.Investments;
+using InvestManage.Contracts.Transactions;
 using InvestManage.Contracts.Users;
 
 namespace InvestManage.Client.Services;
@@ -22,4 +23,5 @@ public interface IInvestManageApiClient
     Task ReactivateInvestmentItemAsync(Guid id, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<InvestmentItemResponse>> GetAccountInvestmentsAsync(Guid accountId, bool includeArchived, CancellationToken cancellationToken = default);
     Task<InvestmentAssignmentResponse> AssignInvestmentAsync(Guid accountId, Guid investmentItemId, CancellationToken cancellationToken = default);
+    Task<TransactionResponse> CreateTransactionAsync(Guid accountId, Guid investmentItemId, CreateTransactionRequest request, CancellationToken cancellationToken = default);
 }

@@ -119,7 +119,7 @@ Completion criteria:
 
 ## Phase 3 — Transactions and holdings
 
-**Status:** Planned
+**Status:** In progress
 
 Suggested branch: `transactions`
 
@@ -131,6 +131,8 @@ Deliverables:
 - Calculation of units held on any requested date.
 - Tests for fractional units, partial sales, invalid overselling, and transaction ordering.
 - Extend transaction types later with reinvested distribution, cash distribution/dividend, fee, and transfer.
+
+INVEST-22 introduces buy and sell entry through the API and WPF client, including field-level validation, fractional values, deterministic ordering metadata, and full-ledger overselling protection. Transaction history and corrections remain in INVEST-23; reusable date-based holdings calculations remain in INVEST-24.
 
 Completion criteria:
 
@@ -333,4 +335,4 @@ For each phase:
 
 ## Next action
 
-Complete INVEST-21 review and integration: verify the Windows WPF account, investment, and assignment workflows against the local API, and merge after CI passes.
+Complete INVEST-22 review and integration: verify buy and sell entry against the local API and SQL Server, then merge after CI passes.

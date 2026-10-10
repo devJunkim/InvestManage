@@ -4,6 +4,7 @@ using InvestManage.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvestManage.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(InvestManageDbContext))]
-    partial class InvestManageDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261009113831_AddTransactionEntryDetails")]
+    partial class AddTransactionEntryDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,0 +1,68 @@
+<UserControl x:Class="InvestManage.Wpf.Views.UserAccessView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.ColumnSpan="3" Background="#E8F1FA" Padding="12" Margin="0,0,0,12"
+                Visibility="{Binding IsAuthenticated, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Content="Sign out" Command="{Binding LogoutCommand}"
+                        IsEnabled="{Binding IsAuthenticated}" />
+                <TextBlock Text="{Binding SessionDescription}" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </DockPanel>
+        </Border>
+
+        <StackPanel Grid.Row="1" Margin="0,0,0,10">
+            <TextBlock Text="{Binding StatusMessage}" Foreground="#334155" />
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="#B42318" TextWrapping="Wrap" />
+        </StackPanel>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Grid.Column="2" Header="Create user"
+                      Visibility="{Binding IsRegistrationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="First name" />
+                        <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="Last name" />
+                        <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="Email" />
+                        <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="Login ID" />
+                        <TextBox Text="{Binding LoginId, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="Password (minimum 8 characters)" />
+                        <PasswordBox x:Name="RegistrationPasswordBox" PasswordChanged="RegistrationPasswordChanged" />
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <Button Content="Save" Click="CreateUserClicked" />
+                            <Button Content="Cancel" Click="CancelRegistrationClicked" Margin="12,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </GroupBox>
+
+            <GroupBox Grid.Column="0" Header="Sign in">
+                <StackPanel>
+                    <TextBlock Text="Email or Login ID" />
+                    <TextBox Text="{Binding LoginIdentifier, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="Password" />
+                    <PasswordBox x:Name="LoginPasswordBox" PasswordChanged="LoginPasswordChanged" />
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                        <Button Content="Sign in" Click="SignInClicked" />
+                        <Button Content="Create New" Command="{Binding ShowRegistrationCommand}" Margin="12,0,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</UserControl>

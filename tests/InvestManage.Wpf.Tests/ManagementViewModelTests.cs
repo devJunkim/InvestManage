@@ -2,6 +2,7 @@ using InvestManage.Client.Services;
 using InvestManage.Contracts;
 using InvestManage.Contracts.Accounts;
 using InvestManage.Contracts.Investments;
+using InvestManage.Contracts.Transactions;
 using InvestManage.Contracts.Users;
 using InvestManage.Wpf.ViewModels;
 
@@ -152,11 +153,112 @@ public sealed class ManagementViewModelTests
         Assert.Empty(viewModel.Accounts);
     }
 
+    [Fact]
+    public async Task Transactions_SavesBuyForSelectedAccountInvestment()
+    {
+        var api = new FakeApiClient();
+        var account = new InvestmentAccountResponse(
+            AccountId,
+            UserId,
+            "RRSP",
+            InvestmentAccountType.RegisteredRetirementSavingsPlan,
+            "CAD",
+            false);
+        api.Accounts.Add(account);
+        api.Assigned.Add(Item());
+        var viewModel = new TransactionsViewModel(api);
+        viewModel.SetCurrentUser(User());
+
+        await viewModel.RefreshAccountsAsync();
+        viewModel.SelectedAccount = account;
+        await viewModel.LoadInvestmentsAsync();
+        viewModel.SelectedInvestment = Assert.Single(viewModel.Investments);
+        viewModel.SelectedType = TransactionType.Buy;
+        viewModel.TradeDate = new DateTime(2026, 10, 9);
+        viewModel.Quantity = 12.345678m;
+        viewModel.UnitPrice = 20.0812m;
+        viewModel.Notes = "Opening purchase";
+
+        await viewModel.SaveAsync();
+
+        Assert.Equal((AccountId, ItemId), api.LastTransactionTarget);
+        Assert.Equal(12.345678m, api.LastTransaction?.Quantity);
+        Assert.Equal(20.0812m, api.LastTransaction?.UnitPrice);
+        Assert.Equal("Buy transaction saved.", viewModel.StatusMessage);
+    }
+
+    [Fact]
+    public void Transactions_QuantityAndAmount_CalculateUnitPriceAtInvestmentPrecision()
+    {
+        var viewModel = TransactionCalculator();
+        viewModel.Quantity = 3;
+        viewModel.Amount = 10;
+
+        Assert.True(viewModel.Calculate(true));
+
+        Assert.Equal(3.3333m, viewModel.UnitPrice);
+        Assert.Equal("3.3333", viewModel.UnitPriceText);
+    }
+
+    [Fact]
+    public void Transactions_QuantityAndUnitPrice_CalculateTwoDecimalAmount()
+    {
+        var viewModel = TransactionCalculator();
+        viewModel.Quantity = 3;
+        viewModel.UnitPrice = 3.3333m;
+
+        Assert.True(viewModel.Calculate(true));
+
+        Assert.Equal(10m, viewModel.Amount);
+        Assert.Equal("10.00", viewModel.AmountText);
+    }
+
+    [Fact]
+    public void Transactions_UnitPriceAndAmount_CalculateEightDecimalQuantity()
+    {
+        var viewModel = TransactionCalculator();
+        viewModel.UnitPrice = 4;
+        viewModel.Amount = 10;
+
+        Assert.True(viewModel.Calculate(true));
+
+        Assert.Equal(2.5m, viewModel.Quantity);
+        Assert.Equal("2.50000000", viewModel.QuantityText);
+    }
+
+    [Fact]
+    public void Transactions_AllValues_RequireConfirmationAndRecalculateUnitPrice()
+    {
+        var viewModel = TransactionCalculator();
+        viewModel.Quantity = 3;
+        viewModel.UnitPrice = 9;
+        viewModel.Amount = 10;
+
+        Assert.True(viewModel.RequiresCalculationConfirmation);
+        Assert.False(viewModel.Calculate(false));
+        Assert.Equal(9m, viewModel.UnitPrice);
+
+        Assert.True(viewModel.Calculate(true));
+        Assert.Equal(3.3333m, viewModel.UnitPrice);
+        Assert.Equal("3.3333", viewModel.UnitPriceText);
+        Assert.Equal(10m, viewModel.Amount);
+        Assert.False(viewModel.RequiresCalculationConfirmation);
+    }
+
     private static InvestmentItemResponse Item() =>
         new(ItemId, "TDB3046", "TD Canadian Index Fund", InvestmentType.MutualFund, "CAD", "TD", 4, null, false);
 
     private static UserResponse User() =>
         new(UserId, "Jun", "Kim", "Jun Kim", "jun@example.test", "junkim");
+
+    private static TransactionsViewModel TransactionCalculator()
+    {
+        var viewModel = new TransactionsViewModel(new FakeApiClient())
+        {
+            SelectedInvestment = Item()
+        };
+        return viewModel;
+    }
 
     private sealed class FakeApiClient : IInvestManageApiClient
     {
@@ -168,6 +270,8 @@ public sealed class ManagementViewModelTests
         public RegisterUserRequest? LastRegistration { get; private set; }
         public CreateInvestmentAccountRequest? LastCreatedAccount { get; private set; }
         public (Guid AccountId, Guid ItemId)? LastAssignment { get; private set; }
+        public (Guid AccountId, Guid ItemId)? LastTransactionTarget { get; private set; }
+        public CreateTransactionRequest? LastTransaction { get; private set; }
 
         public Task<SystemStatusResponse> GetSystemStatusAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult(new SystemStatusResponse("InvestManage API", "1.0.0", "Test", DateTimeOffset.UtcNow));
@@ -231,6 +335,25 @@ public sealed class ManagementViewModelTests
             }
 
             return Task.FromResult(new InvestmentAssignmentResponse(Guid.NewGuid(), accountId, investmentItemId));
+        }
+
+        public Task<TransactionResponse> CreateTransactionAsync(Guid accountId, Guid investmentItemId, CreateTransactionRequest request, CancellationToken cancellationToken = default)
+        {
+            LastTransactionTarget = (accountId, investmentItemId);
+            LastTransaction = request;
+            return Task.FromResult(new TransactionResponse(
+                Guid.NewGuid(),
+                accountId,
+                investmentItemId,
+                request.Type,
+                request.TradeDate,
+                request.SettlementDate,
+                request.Quantity,
+                request.UnitPrice,
+                request.Fees,
+                request.CurrencyCode ?? string.Empty,
+                request.Notes,
+                DateTimeOffset.UtcNow));
         }
     }
 }
